@@ -51,7 +51,7 @@ class OlibsChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => "OLIB's",
+                    'label' => "OLIBS",
                     'data' => $groupedData->pluck('saldo'),
                     'backgroundColor' => 'rgba(0, 123, 255, 1)',
                     'borderWidth' => 1,
