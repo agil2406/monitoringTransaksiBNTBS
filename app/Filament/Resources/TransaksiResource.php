@@ -199,13 +199,13 @@ class TransaksiResource extends Resource
                     ->searchable(),
 
                 TextColumn::make('cut_off_olibs')
-                    ->label('Cut Off OLIBS')
+                    ->label('Cut Off')
                     ->money('idr')
                     ->sortable()
                     ->searchable(),
 
                 TextColumn::make('kewajiban_olibs')
-                    ->label('Kewajiban OLIBS')
+                    ->label('Kewajiban')
                     ->money('idr')
                     ->sortable()
                     ->searchable(),

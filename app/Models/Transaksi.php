@@ -29,12 +29,12 @@ class Transaksi extends Model
 
     public function setOutgoingAttribute($value)
     {
-        $this->attributes['outgoing'] = $value ?? 0;
+        $this->attributes['outgoing_ossw'] = $value ?? 0;
     }
 
     public function setIncomingAttribute($value)
     {
-        $this->attributes['incoming'] = $value ?? 0;
+        $this->attributes['incoming_ossw'] = $value ?? 0;
     }
     
 }
