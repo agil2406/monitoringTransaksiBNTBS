@@ -144,6 +144,7 @@ class TransaksiResource extends Resource
                     ->label('Incoming OSSW')
                     ->numeric()
                     ->nullable()
+                    ->live(debounce: 500)
                     ->prefix('Rp'),
 
                 TextInput::make('selisih')
