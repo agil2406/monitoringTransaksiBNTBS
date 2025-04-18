@@ -273,7 +273,9 @@ class TransaksiResource extends Resource
                 
             ])
             ->headerActions([
-                Action::make('Report Transaksi')
+                Action::make('Download Report')
+                    ->label('Download Report')
+                    ->icon('heroicon-o-arrow-down-on-square')
                     ->form([
                         DatePicker::make('tanggal')
                             ->label('Pilih Tanggal')
