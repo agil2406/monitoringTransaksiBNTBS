@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources;
 
+use App\Exports\TransaksiExport;
 use App\Filament\Resources\TransaksiResource\Pages;
 use App\Filament\Resources\TransaksiResource\RelationManagers;
 use App\Models\Transaksi;
 use Carbon\Carbon;
+use Filament\Tables\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
@@ -23,6 +25,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TransaksiResource extends Resource
 {
@@ -267,6 +270,21 @@ class TransaksiResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                
+            ])
+            ->headerActions([
+                Action::make('Report Transaksi')
+                    ->form([
+                        DatePicker::make('tanggal')
+                            ->label('Pilih Tanggal')
+                            ->required(),
+                    ])
+                    ->action(function (array $data) {
+                        $tanggal = $data['tanggal'];
+                        $fileName = 'transaksi_' . Carbon::parse($tanggal)->format('d/m/Y') . '.xlsx';
+    
+                        return Excel::download(new TransaksiExport($tanggal), $fileName);
+                    }),
             ]);
             // ->bulkActions([
             //     Tables\Actions\BulkActionGroup::make([
