@@ -40,19 +40,34 @@ class TransaksiResource extends Resource
 
     public static function form(Form $form): Form
     {
-         // Ambil waktu transaksi terakhir dari database
-    $lastTransactionTime = Transaksi::latest('waktu_transaksi')->pluck('waktu_transaksi')->first();
+        $lastTransactionTime = Transaksi::latest('waktu_transaksi')->pluck('waktu_transaksi')->first();
 
-    // Pastikan ada data
-    if ($lastTransactionTime) {
-        // Tambahkan 30 menit ke waktu transaksi terakhir
-        $newTime = Carbon::parse($lastTransactionTime)->addMinutes(30);
-        // Format waktu
-        $formattedTime = $newTime->format('d M Y H:i');
-    } else {
-        // Jika tidak ada data transaksi, set waktu default (misalnya, sekarang)
-        $formattedTime = Carbon::now()->addMinutes(30)->format('d M Y H:i');
-    }
+        if ($lastTransactionTime) {
+            $lastTime = Carbon::parse($lastTransactionTime);
+        
+            if ($lastTime->format('H:i') === '23:30') {
+                $newTime = $lastTime->addMinutes(29); // Jadi 23:59
+            } elseif ($lastTime->greaterThanOrEqualTo($lastTime->copy()->setTime(23, 30))) {
+                $newTime = $lastTime->copy()->setTime(23, 59); // Maksimal
+            } else {
+                $newTime = $lastTime->addMinutes(30);
+            }
+        
+            $formattedTime = $newTime->format('d M Y H:i');
+        } else {
+            $now = Carbon::now();
+        
+            if ($now->format('H:i') === '23:30') {
+                $newTime = $now->addMinutes(29);
+            } elseif ($now->greaterThanOrEqualTo($now->copy()->setTime(23, 30))) {
+                $newTime = $now->copy()->setTime(23, 59);
+            } else {
+                $newTime = $now->addMinutes(30);
+            }
+        
+            $formattedTime = $newTime->format('d M Y H:i');
+        }
+
         return $form
             ->schema([
                 TextInput::make('saldo_awal_hari_olibs')

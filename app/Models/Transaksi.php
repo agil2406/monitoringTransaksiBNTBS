@@ -26,5 +26,15 @@ class Transaksi extends Model
         // Isi otomatis status berdasarkan logika
         $this->attributes['status'] = $value < 10000000 ? 'warning' : 'good';
     }
+
+    public function setOutgoingAttribute($value)
+    {
+        $this->attributes['outgoing'] = $value ?? 0;
+    }
+
+    public function setIncomingAttribute($value)
+    {
+        $this->attributes['incoming'] = $value ?? 0;
+    }
     
 }
