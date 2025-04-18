@@ -7,6 +7,7 @@ use App\Filament\Resources\TransaksiResource\RelationManagers;
 use App\Models\Transaksi;
 use Carbon\Carbon;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
@@ -18,6 +19,8 @@ use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Support\RawJs;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -253,7 +256,28 @@ class TransaksiResource extends Resource
                     ->dateTime(),
             ])
             ->filters([
-                //
+                SelectFilter::make('status')
+                    ->options([
+                        'warning' => 'Warning',
+                        'good' => 'Good',
+                    ]),
+                Filter::make('waktu_transaksi')
+                    ->form([
+                        DatePicker::make('Dari'),
+                        DatePicker::make('Sampai')
+                            ->minDate(fn (Get $get) => $get('Dari')), // Set minimum date to the value of 'Dari'
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['Dari'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('waktu_transaksi', '>=', $date),
+                            )
+                            ->when(
+                                $data['Sampai'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('waktu_transaksi', '<=', $date),
+                            );
+                    })
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
